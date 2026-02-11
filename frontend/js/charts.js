@@ -3,15 +3,21 @@
  * Creates various charts for displaying simulation results
  */
 
-// Color utilities
+// Color utilities - Updated to match reference design
 const COLORS = {
     low: '#00ff88',
-    moderate: '#ffa502',
-    high: '#ff6348',
-    critical: '#ff4757',
-    positive: '#00d2ff',
-    negative: '#f5576c',
-    neutral: '#b0b3c1'
+    moderate: '#fbbf24',
+    high: '#fb923c',
+    critical: '#f87171',
+    positive: '#60a5fa',
+    negative: '#f87171',
+    neutral: '#c4b5fd',
+    purple: '#a855f7',
+    blue: '#60a5fa',
+    green: '#34d399',
+    red: '#f87171',
+    orange: '#fb923c',
+    yellow: '#fbbf24'
 };
 
 /**
@@ -190,15 +196,15 @@ function createSectorChart(canvasId, sectorData) {
                     min: -1,
                     max: 1,
                     ticks: {
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
+                        color: 'rgba(196, 181, 253, 0.1)'
                     }
                 },
                 x: {
                     ticks: {
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     },
                     grid: {
                         display: false
@@ -260,7 +266,7 @@ function createSentimentChart(canvasId, sentimentData) {
                 legend: {
                     position: 'bottom',
                     labels: {
-                        color: '#b0b3c1',
+                        color: '#c4b5fd',
                         padding: 15
                     }
                 },
@@ -332,13 +338,13 @@ function createComparisonChart(canvasId, comparisonData) {
                     title: {
                         display: true,
                         text: 'Risk Score',
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     },
                     ticks: {
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
+                        color: 'rgba(196, 181, 253, 0.1)'
                     }
                 },
                 y1: {
@@ -347,10 +353,10 @@ function createComparisonChart(canvasId, comparisonData) {
                     title: {
                         display: true,
                         text: 'Inflation Rate (%)',
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     },
                     ticks: {
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     },
                     grid: {
                         display: false
@@ -358,7 +364,7 @@ function createComparisonChart(canvasId, comparisonData) {
                 },
                 x: {
                     ticks: {
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     },
                     grid: {
                         display: false
@@ -368,7 +374,7 @@ function createComparisonChart(canvasId, comparisonData) {
             plugins: {
                 legend: {
                     labels: {
-                        color: '#b0b3c1'
+                        color: '#c4b5fd'
                     }
                 }
             }
