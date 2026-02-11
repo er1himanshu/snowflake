@@ -26,7 +26,7 @@ class SentimentAnalyzer:
         result = self.sentiment_model.analyze_policy_sentiment(
             policy_type,
             magnitude,
-            duration_months
+            description=""
         )
         
         return result

@@ -1,8 +1,7 @@
-"""Public sentiment analysis model using NLP"""
+"""Public sentiment analysis model using keyword-based approach"""
 import json
 import random
 from pathlib import Path
-from textblob import TextBlob
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 from config import DATA_DIR
@@ -11,12 +10,13 @@ from config import DATA_DIR
 class SentimentModel:
     """
     Model to analyze and predict public sentiment based on policy changes.
-    Uses TextBlob for sentiment analysis and generates synthetic reactions.
+    Uses keyword-based sentiment analysis without external NLP libraries.
     """
     
     def __init__(self):
         self.sentiment_data = {}
         self._load_sentiment_data()
+        self._init_keyword_lexicon()
     
     def _load_sentiment_data(self):
         """Load sentiment templates from JSON"""
@@ -24,6 +24,24 @@ class SentimentModel:
         with open(data_path, 'r') as f:
             data = json.load(f)
         self.sentiment_data = data['policy_sentiments']
+    
+    def _init_keyword_lexicon(self):
+        """Initialize keyword-based sentiment lexicon"""
+        self.positive_words = {
+            'great', 'good', 'excellent', 'amazing', 'wonderful', 'fantastic',
+            'positive', 'benefit', 'help', 'support', 'improve', 'progress',
+            'growth', 'development', 'success', 'efficient', 'fair', 'justice',
+            'stability', 'prosperity', 'opportunity', 'innovation', 'forward',
+            'boost', 'enhance', 'strengthen', 'protect', 'sustainable'
+        }
+        
+        self.negative_words = {
+            'bad', 'terrible', 'awful', 'horrible', 'poor', 'worst',
+            'negative', 'hurt', 'harm', 'damage', 'destroy', 'crisis',
+            'burden', 'expensive', 'costly', 'unfair', 'inequality', 'problem',
+            'struggle', 'difficulty', 'hardship', 'loss', 'decline', 'recession',
+            'inflation', 'unaffordable', 'cut', 'reduce', 'eliminate', 'fail'
+        }
     
     def generate_reactions(self, policy_type, magnitude):
         """
@@ -54,7 +72,7 @@ class SentimentModel:
     
     def analyze_sentiment(self, texts):
         """
-        Analyze sentiment of text samples using TextBlob
+        Analyze sentiment of text samples using keyword matching
         
         Args:
             texts: List of text strings to analyze
@@ -65,8 +83,20 @@ class SentimentModel:
         sentiments = []
         
         for text in texts:
-            blob = TextBlob(text)
-            polarity = blob.sentiment.polarity  # -1 to 1
+            # Convert to lowercase and split into words
+            words = text.lower().split()
+            
+            # Count positive and negative words
+            positive_count = sum(1 for word in words if word in self.positive_words)
+            negative_count = sum(1 for word in words if word in self.negative_words)
+            
+            # Calculate polarity score (-1 to 1)
+            total_sentiment_words = positive_count + negative_count
+            if total_sentiment_words > 0:
+                polarity = (positive_count - negative_count) / total_sentiment_words
+            else:
+                polarity = 0.0
+            
             sentiments.append(polarity)
         
         # Calculate statistics
@@ -108,36 +138,41 @@ class SentimentModel:
             concerns = random.sample(
                 negative_keywords,
                 min(3, len(negative_keywords))
-            )
+            ) if negative_keywords else ["increased burden", "economic impact", "public concern"]
         elif magnitude < -5:
             positive_keywords = policy_data.get('positive_keywords', [])
             concerns = [f"positive: {kw}" for kw in random.sample(
                 positive_keywords,
                 min(2, len(positive_keywords))
-            )]
+            )] if positive_keywords else ["positive: stability", "positive: growth"]
         else:
             neutral_keywords = policy_data.get('neutral_keywords', [])
             concerns = random.sample(
                 neutral_keywords,
                 min(2, len(neutral_keywords))
-            )
+            ) if neutral_keywords else ["policy adjustment", "economic effect"]
         
         return concerns
     
-    def analyze_policy_sentiment(self, policy_type, magnitude, duration_months):
+    def analyze_policy_sentiment(self, policy_type, magnitude, description=""):
         """
         Comprehensive sentiment analysis for a policy change
         
         Args:
             policy_type: Type of policy change
             magnitude: Magnitude of change (%)
-            duration_months: Duration of policy effect
+            description: Text description of the policy
         
         Returns:
             dict: Comprehensive sentiment analysis
         """
         # Generate reactions
         reactions = self.generate_reactions(policy_type, magnitude)
+        
+        # If description is provided, analyze it too
+        if description and description.strip():
+            # Add description sentiment to the mix
+            reactions.append(description)
         
         # Analyze sentiment
         sentiment_analysis = self.analyze_sentiment(reactions)
@@ -149,9 +184,8 @@ class SentimentModel:
         # Higher magnitude and negative sentiment increase unrest probability
         unrest_base = abs(magnitude) / 100 * 0.3
         sentiment_factor = max(0, -sentiment_analysis['overall_sentiment_score']) * 0.4
-        duration_factor = min(duration_months / 12 * 0.2, 0.2)
         
-        social_unrest_probability = min(1.0, unrest_base + sentiment_factor + duration_factor)
+        social_unrest_probability = min(1.0, unrest_base + sentiment_factor)
         
         # Determine sentiment category
         score = sentiment_analysis['overall_sentiment_score']
