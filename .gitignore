@@ -138,3 +138,7 @@ Thumbs.db
 *.sqlite
 simulation_history/
 logs/
+
+# Node modules and package files
+node_modules/
+package-lock.json
