@@ -5,13 +5,13 @@
 
 // Color utilities
 const COLORS = {
-    low: '#00ff88',
-    moderate: '#ffa502',
-    high: '#ff6348',
-    critical: '#ff4757',
-    positive: '#00d2ff',
-    negative: '#f5576c',
-    neutral: '#b0b3c1'
+    low: '#00c851',
+    moderate: '#f39c12',
+    high: '#e67e22',
+    critical: '#e74c3c',
+    positive: '#0095da',
+    negative: '#e74c3c',
+    neutral: '#7f8c8d'
 };
 
 /**
@@ -37,7 +37,10 @@ function getRiskColorByScore(score) {
  */
 function createInflationChart(canvasId, inflationData) {
     const ctx = document.getElementById(canvasId);
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn(`Canvas element ${canvasId} not found`);
+        return;
+    }
 
     const inflationRate = inflationData.predicted_inflation_rate;
     const baseline = inflationData.baseline_inflation;
@@ -45,39 +48,44 @@ function createInflationChart(canvasId, inflationData) {
     // Destroy existing chart
     if (ctx.chart) {
         ctx.chart.destroy();
+        ctx.chart = null;
     }
 
-    ctx.chart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Predicted', 'Safe Zone'],
-            datasets: [{
-                data: [inflationRate, Math.max(0, 10 - inflationRate)],
-                backgroundColor: [
-                    getRiskColorByScore(inflationRate * 10),
-                    'rgba(255, 255, 255, 0.1)'
-                ],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            cutout: '75%',
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.label}: ${context.parsed.toFixed(1)}%`;
+    try {
+        ctx.chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Predicted', 'Safe Zone'],
+                datasets: [{
+                    data: [inflationRate, Math.max(0, 10 - inflationRate)],
+                    backgroundColor: [
+                        getRiskColorByScore(inflationRate * 10),
+                        'rgba(0, 0, 0, 0.05)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed.toFixed(1)}%`;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error('Error creating inflation chart:', error);
+    }
 
     // Update details
     const detailsDiv = document.getElementById('inflation-details');
@@ -96,46 +104,54 @@ function createInflationChart(canvasId, inflationData) {
  */
 function createRiskChart(canvasId, riskData) {
     const ctx = document.getElementById(canvasId);
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn(`Canvas element ${canvasId} not found`);
+        return;
+    }
 
     const riskScore = riskData.composite_risk_score;
     
     // Destroy existing chart
     if (ctx.chart) {
         ctx.chart.destroy();
+        ctx.chart = null;
     }
 
-    ctx.chart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Risk Score', 'Safe Zone'],
-            datasets: [{
-                data: [riskScore, Math.max(0, 100 - riskScore)],
-                backgroundColor: [
-                    getRiskColor(riskData.risk_level),
-                    'rgba(255, 255, 255, 0.1)'
-                ],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            cutout: '75%',
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.label}: ${context.parsed.toFixed(1)}`;
+    try {
+        ctx.chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Risk Score', 'Safe Zone'],
+                datasets: [{
+                    data: [riskScore, Math.max(0, 100 - riskScore)],
+                    backgroundColor: [
+                        getRiskColor(riskData.risk_level),
+                        'rgba(0, 0, 0, 0.05)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed.toFixed(1)}`;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error('Error creating risk chart:', error);
+    }
 
     // Update details
     const detailsDiv = document.getElementById('risk-details');
@@ -155,7 +171,10 @@ function createRiskChart(canvasId, riskData) {
  */
 function createSectorChart(canvasId, sectorData) {
     const ctx = document.getElementById(canvasId);
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn(`Canvas element ${canvasId} not found`);
+        return;
+    }
 
     const sectors = Object.keys(sectorData.sector_impacts);
     const impacts = Object.values(sectorData.sector_impacts);
@@ -163,6 +182,7 @@ function createSectorChart(canvasId, sectorData) {
     // Destroy existing chart
     if (ctx.chart) {
         ctx.chart.destroy();
+        ctx.chart = null;
     }
 
     // Color code bars based on positive/negative impact
@@ -170,57 +190,61 @@ function createSectorChart(canvasId, sectorData) {
         impact > 0 ? COLORS.positive : COLORS.negative
     );
 
-    ctx.chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: sectors,
-            datasets: [{
-                label: 'Impact Score',
-                data: impacts,
-                backgroundColor: backgroundColors,
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    min: -1,
-                    max: 1,
-                    ticks: {
-                        color: '#b0b3c1'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }
-                },
-                x: {
-                    ticks: {
-                        color: '#b0b3c1'
-                    },
-                    grid: {
-                        display: false
-                    }
-                }
+    try {
+        ctx.chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: sectors,
+                datasets: [{
+                    label: 'Impact Score',
+                    data: impacts,
+                    backgroundColor: backgroundColors,
+                    borderWidth: 0
+                }]
             },
-            plugins: {
-                legend: {
-                    display: false
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: -1,
+                        max: 1,
+                        ticks: {
+                            color: '#5a6c7d'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#5a6c7d'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const impact = context.parsed.y;
-                            const sentiment = impact > 0 ? 'Positive' : 'Negative';
-                            return `${sentiment} Impact: ${Math.abs(impact).toFixed(3)}`;
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const impact = context.parsed.y;
+                                const sentiment = impact > 0 ? 'Positive' : 'Negative';
+                                return `${sentiment} Impact: ${Math.abs(impact).toFixed(3)}`;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error('Error creating sector chart:', error);
+    }
 }
 
 /**
@@ -228,52 +252,60 @@ function createSectorChart(canvasId, sectorData) {
  */
 function createSentimentChart(canvasId, sentimentData) {
     const ctx = document.getElementById(canvasId);
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn(`Canvas element ${canvasId} not found`);
+        return;
+    }
 
     // Destroy existing chart
     if (ctx.chart) {
         ctx.chart.destroy();
+        ctx.chart = null;
     }
 
-    ctx.chart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Positive', 'Negative', 'Neutral'],
-            datasets: [{
-                data: [
-                    sentimentData.positive_ratio,
-                    sentimentData.negative_ratio,
-                    sentimentData.neutral_ratio
-                ],
-                backgroundColor: [
-                    COLORS.positive,
-                    COLORS.negative,
-                    COLORS.neutral
-                ],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: '#b0b3c1',
-                        padding: 15
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.label}: ${context.parsed.toFixed(1)}%`;
+    try {
+        ctx.chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Positive', 'Negative', 'Neutral'],
+                datasets: [{
+                    data: [
+                        sentimentData.positive_ratio,
+                        sentimentData.negative_ratio,
+                        sentimentData.neutral_ratio
+                    ],
+                    backgroundColor: [
+                        COLORS.positive,
+                        COLORS.negative,
+                        COLORS.neutral
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#5a6c7d',
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed.toFixed(1)}%`;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error('Error creating sentiment chart:', error);
+    }
 
     // Update details
     const detailsDiv = document.getElementById('sentiment-details');
@@ -292,7 +324,10 @@ function createSentimentChart(canvasId, sentimentData) {
  */
 function createComparisonChart(canvasId, comparisonData) {
     const ctx = document.getElementById(canvasId);
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn(`Canvas element ${canvasId} not found`);
+        return;
+    }
 
     const scenarioNames = comparisonData.map(s => s.name);
     const riskScores = comparisonData.map(s => s.risk_score);
@@ -301,77 +336,82 @@ function createComparisonChart(canvasId, comparisonData) {
     // Destroy existing chart
     if (ctx.chart) {
         ctx.chart.destroy();
+        ctx.chart = null;
     }
 
-    ctx.chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: scenarioNames,
-            datasets: [
-                {
-                    label: 'Risk Score',
-                    data: riskScores,
-                    backgroundColor: COLORS.negative,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'Inflation Rate (%)',
-                    data: inflationRates,
-                    backgroundColor: COLORS.positive,
-                    yAxisID: 'y1'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                y: {
-                    type: 'linear',
-                    position: 'left',
-                    title: {
-                        display: true,
-                        text: 'Risk Score',
-                        color: '#b0b3c1'
+    try {
+        ctx.chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: scenarioNames,
+                datasets: [
+                    {
+                        label: 'Risk Score',
+                        data: riskScores,
+                        backgroundColor: COLORS.negative,
+                        yAxisID: 'y'
                     },
-                    ticks: {
-                        color: '#b0b3c1'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
+                    {
+                        label: 'Inflation Rate (%)',
+                        data: inflationRates,
+                        backgroundColor: COLORS.positive,
+                        yAxisID: 'y1'
                     }
-                },
-                y1: {
-                    type: 'linear',
-                    position: 'right',
-                    title: {
-                        display: true,
-                        text: 'Inflation Rate (%)',
-                        color: '#b0b3c1'
-                    },
-                    ticks: {
-                        color: '#b0b3c1'
-                    },
-                    grid: {
-                        display: false
-                    }
-                },
-                x: {
-                    ticks: {
-                        color: '#b0b3c1'
-                    },
-                    grid: {
-                        display: false
-                    }
-                }
+                ]
             },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#b0b3c1'
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Risk Score',
+                            color: '#5a6c7d'
+                        },
+                        ticks: {
+                            color: '#5a6c7d'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Inflation Rate (%)',
+                            color: '#5a6c7d'
+                        },
+                        ticks: {
+                            color: '#5a6c7d'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#5a6c7d'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#5a6c7d'
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error('Error creating comparison chart:', error);
+    }
 }
