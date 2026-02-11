@@ -93,9 +93,9 @@ cd snowflake
 pip install -r requirements.txt
 ```
 
-3. **Download NLTK data (for TextBlob)**
+3. **Download NLTK data (for TextBlob and sentiment analysis)**
 ```bash
-python -c "import nltk; nltk.download('brown'); nltk.download('punkt')"
+python -c "import nltk; nltk.download('brown'); nltk.download('punkt'); nltk.download('wordnet'); nltk.download('omw-1.4')"
 ```
 
 4. **Set up environment variables (optional)**
