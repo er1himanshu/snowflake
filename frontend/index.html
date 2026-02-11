@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❄️ Snowflake - AI Policy Impact Simulator</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="/static/assets/logo.svg" alt="Snowflake Logo" class="logo">
+                    <div>
+                        <h1 class="title">❄️ Snowflake</h1>
+                        <p class="subtitle">AI Policy Impact Simulator</p>
+                    </div>
+                </div>
+                <div class="header-badge">
+                    <span class="badge">VIT Vellore Hackathon 2026</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-button active" data-tab="simulate">
+                    📊 Single Simulation
+                </button>
+                <button class="tab-button" data-tab="compare">
+                    📈 Compare Scenarios
+                </button>
+            </div>
+
+            <!-- Single Simulation Tab -->
+            <div id="simulate-tab" class="tab-content active">
+                <!-- Input Panel -->
+                <div class="card input-panel">
+                    <h2 class="card-title">Policy Input Parameters</h2>
+                    <form id="policy-form" class="policy-form">
+                        <div class="form-group">
+                            <label for="policy-type">Policy Type</label>
+                            <select id="policy-type" name="policy_type" required>
+                                <option value="">Select policy type...</option>
+                                <option value="Fuel Price Change">Fuel Price Change</option>
+                                <option value="Tax Reform">Tax Reform</option>
+                                <option value="Subsidy Change">Subsidy Change</option>
+                                <option value="Minimum Wage Change">Minimum Wage Change</option>
+                                <option value="Environmental Regulation">Environmental Regulation</option>
+                                <option value="Import/Export Tariff">Import/Export Tariff</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="magnitude">Magnitude of Change (%)</label>
+                            <div class="slider-container">
+                                <input type="range" id="magnitude" name="magnitude" min="-50" max="50" value="0" step="0.5">
+                                <span id="magnitude-value" class="slider-value">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="duration">Duration (Months)</label>
+                            <input type="number" id="duration" name="duration_months" min="1" max="60" value="12" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Affected Sectors (Select all that apply)</label>
+                            <div class="checkbox-group" id="sectors-checkboxes">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="Agriculture"> Agriculture
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="Manufacturing"> Manufacturing
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="Services"> Services
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="Transport"> Transport
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="Energy"> Energy
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="Healthcare"> Healthcare
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="Education"> Education
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="sectors" value="IT"> IT
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Policy Description (Optional)</label>
+                            <textarea id="description" name="description" rows="3" placeholder="Brief description of the policy change..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="simulate-btn">
+                            <span class="btn-text">🚀 Run Simulation</span>
+                            <span class="spinner hidden"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Results Dashboard -->
+                <div id="results-dashboard" class="results-dashboard hidden">
+                    <!-- Summary Cards -->
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-icon">📊</div>
+                            <div class="summary-content">
+                                <p class="summary-label">Predicted Inflation</p>
+                                <p class="summary-value" id="inflation-value">-</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon">⚠️</div>
+                            <div class="summary-content">
+                                <p class="summary-label">Risk Level</p>
+                                <p class="summary-value" id="risk-level-value">-</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon">💭</div>
+                            <div class="summary-content">
+                                <p class="summary-label">Public Sentiment</p>
+                                <p class="summary-value" id="sentiment-value">-</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon">🏭</div>
+                            <div class="summary-content">
+                                <p class="summary-label">Most Affected</p>
+                                <p class="summary-value small" id="affected-sectors-value">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Results -->
+                    <div class="results-grid">
+                        <!-- Inflation Impact Chart -->
+                        <div class="card chart-card">
+                            <h3 class="card-title">Inflation Impact</h3>
+                            <canvas id="inflation-chart"></canvas>
+                            <div id="inflation-details" class="chart-details"></div>
+                        </div>
+
+                        <!-- Risk Assessment -->
+                        <div class="card chart-card">
+                            <h3 class="card-title">Risk Assessment</h3>
+                            <canvas id="risk-chart"></canvas>
+                            <div id="risk-details" class="chart-details"></div>
+                        </div>
+
+                        <!-- Sector Impact Chart -->
+                        <div class="card chart-card wide">
+                            <h3 class="card-title">Sector-wise Impact Analysis</h3>
+                            <canvas id="sector-chart"></canvas>
+                        </div>
+
+                        <!-- Sentiment Analysis -->
+                        <div class="card chart-card">
+                            <h3 class="card-title">Public Sentiment Analysis</h3>
+                            <canvas id="sentiment-chart"></canvas>
+                            <div id="sentiment-details" class="chart-details"></div>
+                        </div>
+
+                        <!-- Recommendations -->
+                        <div class="card recommendations-card">
+                            <h3 class="card-title">Recommendations</h3>
+                            <div id="recommendations-list" class="recommendations-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compare Scenarios Tab -->
+            <div id="compare-tab" class="tab-content">
+                <div class="card">
+                    <h2 class="card-title">Scenario Comparison</h2>
+                    
+                    <!-- Scenario Builder -->
+                    <div class="scenario-builder">
+                        <h3>Add Scenarios to Compare</h3>
+                        <div id="scenarios-list" class="scenarios-list"></div>
+                        
+                        <button type="button" class="btn-secondary" id="add-scenario-btn">
+                            ➕ Add Scenario
+                        </button>
+                        
+                        <button type="button" class="btn-primary" id="compare-btn" disabled>
+                            📈 Compare Scenarios
+                        </button>
+                    </div>
+
+                    <!-- Comparison Results -->
+                    <div id="comparison-results" class="comparison-results hidden">
+                        <h3>Comparison Results</h3>
+                        <div id="comparison-table-container"></div>
+                        <div id="comparison-recommendation" class="comparison-recommendation"></div>
+                        <canvas id="comparison-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Built for VIT Vellore Hackathon 2026 | Team: [Your Team Name]</p>
+            <p>Powered by FastAPI, scikit-learn, and Chart.js</p>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Running simulation...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/simulator.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
