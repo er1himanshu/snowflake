@@ -1,6 +1,7 @@
 """Public sentiment analysis model using keyword-based approach"""
 import json
 import random
+import re
 from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
@@ -12,6 +13,13 @@ class SentimentModel:
     Model to analyze and predict public sentiment based on policy changes.
     Uses keyword-based sentiment analysis without external NLP libraries.
     """
+    
+    # Default fallback concerns when no policy data is available
+    DEFAULT_CONCERNS = {
+        'positive': ["positive: stability", "positive: growth"],
+        'negative': ["increased burden", "economic impact", "public concern"],
+        'neutral': ["policy adjustment", "economic effect"]
+    }
     
     def __init__(self):
         self.sentiment_data = {}
@@ -83,12 +91,12 @@ class SentimentModel:
         sentiments = []
         
         for text in texts:
-            # Convert to lowercase and split into words
-            words = text.lower().split()
+            # Extract words using regex to handle punctuation properly
+            words = set(re.findall(r'\b\w+\b', text.lower()))
             
             # Count positive and negative words
-            positive_count = sum(1 for word in words if word in self.positive_words)
-            negative_count = sum(1 for word in words if word in self.negative_words)
+            positive_count = len(words & self.positive_words)
+            negative_count = len(words & self.negative_words)
             
             # Calculate polarity score (-1 to 1)
             total_sentiment_words = positive_count + negative_count
@@ -138,19 +146,19 @@ class SentimentModel:
             concerns = random.sample(
                 negative_keywords,
                 min(3, len(negative_keywords))
-            ) if negative_keywords else ["increased burden", "economic impact", "public concern"]
+            ) if negative_keywords else self.DEFAULT_CONCERNS['negative']
         elif magnitude < -5:
             positive_keywords = policy_data.get('positive_keywords', [])
             concerns = [f"positive: {kw}" for kw in random.sample(
                 positive_keywords,
                 min(2, len(positive_keywords))
-            )] if positive_keywords else ["positive: stability", "positive: growth"]
+            )] if positive_keywords else self.DEFAULT_CONCERNS['positive']
         else:
             neutral_keywords = policy_data.get('neutral_keywords', [])
             concerns = random.sample(
                 neutral_keywords,
                 min(2, len(neutral_keywords))
-            ) if neutral_keywords else ["policy adjustment", "economic effect"]
+            ) if neutral_keywords else self.DEFAULT_CONCERNS['neutral']
         
         return concerns
     
