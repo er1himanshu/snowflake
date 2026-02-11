@@ -3,22 +3,37 @@
  * Provides basic chart rendering using Canvas API when Chart.js CDN is unavailable
  */
 
+// Constants for styling
+const CHART_COLORS = {
+    TEXT_PRIMARY: '#2c3e50',
+    TEXT_SECONDARY: '#5a6c7d',
+    GRID_COLOR: '#e8ecf1'
+};
+
+const CHART_CONFIG = {
+    MAX_LABEL_LENGTH_BAR: 8,
+    MAX_LABEL_LENGTH_LEGEND: 12
+};
+
 class Chart {
     constructor(ctx, config) {
-        this.ctx = typeof ctx === 'string' ? document.getElementById(ctx) : ctx;
-        if (this.ctx && this.ctx.getContext) {
-            this.canvas = this.ctx;
-            this.context = this.canvas.getContext('2d');
-        } else if (this.ctx) {
-            this.canvas = this.ctx;
+        // Accept either a canvas element or element ID
+        if (typeof ctx === 'string') {
+            this.canvas = document.getElementById(ctx);
+        } else {
+            this.canvas = ctx;
+        }
+        
+        if (this.canvas && this.canvas.getContext) {
             this.context = this.canvas.getContext('2d');
         }
+        
         this.config = config;
         this.type = config.type;
         this.data = config.data;
         this.options = config.options || {};
         
-        if (this.canvas) {
+        if (this.canvas && this.context) {
             this.render();
         }
     }
@@ -87,7 +102,7 @@ class Chart {
         
         // Draw center value for doughnut
         if (this.type === 'doughnut') {
-            ctx.fillStyle = '#2c3e50';
+            ctx.fillStyle = CHART_COLORS.TEXT_PRIMARY;
             ctx.font = 'bold 24px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -157,13 +172,15 @@ class Chart {
         });
         
         // Draw labels
-        ctx.fillStyle = '#5a6c7d';
+        ctx.fillStyle = CHART_COLORS.TEXT_SECONDARY;
         ctx.font = '11px Inter, sans-serif';
         ctx.textAlign = 'center';
         labels.forEach((label, index) => {
             const x = padding + index * barSpacing + barSpacing / 2;
             const maxLabelWidth = barSpacing - 5;
-            const truncatedLabel = label.length > 8 ? label.substring(0, 8) + '...' : label;
+            const truncatedLabel = label.length > CHART_CONFIG.MAX_LABEL_LENGTH_BAR 
+                ? label.substring(0, CHART_CONFIG.MAX_LABEL_LENGTH_BAR) + '...' 
+                : label;
             ctx.fillText(truncatedLabel, x, height - padding + 15);
         });
     }
@@ -184,8 +201,10 @@ class Chart {
             ctx.fillRect(x, legendY, 12, 12);
             
             // Draw label
-            ctx.fillStyle = '#5a6c7d';
-            const truncatedLabel = label.length > 12 ? label.substring(0, 12) + '...' : label;
+            ctx.fillStyle = CHART_COLORS.TEXT_SECONDARY;
+            const truncatedLabel = label.length > CHART_CONFIG.MAX_LABEL_LENGTH_LEGEND 
+                ? label.substring(0, CHART_CONFIG.MAX_LABEL_LENGTH_LEGEND) + '...' 
+                : label;
             ctx.fillText(truncatedLabel, x + 16, legendY + 10);
         });
     }
@@ -194,7 +213,7 @@ class Chart {
         ctx.fillStyle = '#f5f7fa';
         ctx.fillRect(0, 0, width, height);
         
-        ctx.fillStyle = '#5a6c7d';
+        ctx.fillStyle = CHART_COLORS.TEXT_SECONDARY;
         ctx.font = '14px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
