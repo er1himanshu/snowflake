@@ -227,11 +227,24 @@ body {
 
 .slider-container input[type="range"] {
     flex: 1;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--glass-border);
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
     outline: none;
     padding: 0;
+    position: relative;
+}
+
+.slider-container input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.slider-container input[type="range"]::-moz-range-track {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
 .slider-container input[type="range"]::-webkit-slider-thumb {
@@ -239,9 +252,20 @@ body {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: var(--primary-gradient);
+    background: #ffffff;
     cursor: pointer;
-    box-shadow: var(--glow);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-top: -6px;
+}
+
+.slider-container input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: none;
 }
 
 .slider-value {
