@@ -60,7 +60,7 @@ def test_sentiment_model_analyze_policy():
     result = model.analyze_policy_sentiment(
         policy_type="Tax Reform",
         magnitude=15,
-        duration_months=12
+        description="New tax reform policy"
     )
     
     assert 'sentiment_category' in result
