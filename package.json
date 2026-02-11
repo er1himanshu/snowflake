@@ -1,0 +1,27 @@
+{
+  "name": "snowflake",
+  "version": "1.0.0",
+  "description": "\"# ❄️ Snowflake - AI Policy Impact Simulator",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/er1himanshu/snowflake.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/er1himanshu/snowflake/issues"
+  },
+  "homepage": "https://github.com/er1himanshu/snowflake#readme",
+  "dependencies": {
+    "chart.js": "^4.4.0"
+  }
+}
