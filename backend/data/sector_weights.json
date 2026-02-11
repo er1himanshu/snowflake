@@ -1,0 +1,104 @@
+{
+  "sectors": [
+    "Agriculture",
+    "Manufacturing",
+    "Services",
+    "Transport",
+    "Energy",
+    "Healthcare",
+    "Education",
+    "IT"
+  ],
+  "weights": {
+    "Agriculture": 0.18,
+    "Manufacturing": 0.16,
+    "Services": 0.25,
+    "Transport": 0.08,
+    "Energy": 0.10,
+    "Healthcare": 0.09,
+    "Education": 0.07,
+    "IT": 0.07
+  },
+  "interdependencies": {
+    "Agriculture": {
+      "Agriculture": 1.0,
+      "Manufacturing": 0.4,
+      "Services": 0.3,
+      "Transport": 0.6,
+      "Energy": 0.5,
+      "Healthcare": 0.2,
+      "Education": 0.1,
+      "IT": 0.15
+    },
+    "Manufacturing": {
+      "Agriculture": 0.3,
+      "Manufacturing": 1.0,
+      "Services": 0.5,
+      "Transport": 0.7,
+      "Energy": 0.8,
+      "Healthcare": 0.3,
+      "Education": 0.2,
+      "IT": 0.6
+    },
+    "Services": {
+      "Agriculture": 0.2,
+      "Manufacturing": 0.4,
+      "Services": 1.0,
+      "Transport": 0.5,
+      "Energy": 0.4,
+      "Healthcare": 0.6,
+      "Education": 0.7,
+      "IT": 0.8
+    },
+    "Transport": {
+      "Agriculture": 0.5,
+      "Manufacturing": 0.6,
+      "Services": 0.4,
+      "Transport": 1.0,
+      "Energy": 0.9,
+      "Healthcare": 0.3,
+      "Education": 0.2,
+      "IT": 0.3
+    },
+    "Energy": {
+      "Agriculture": 0.6,
+      "Manufacturing": 0.9,
+      "Services": 0.5,
+      "Transport": 0.8,
+      "Energy": 1.0,
+      "Healthcare": 0.4,
+      "Education": 0.3,
+      "IT": 0.5
+    },
+    "Healthcare": {
+      "Agriculture": 0.15,
+      "Manufacturing": 0.3,
+      "Services": 0.6,
+      "Transport": 0.3,
+      "Energy": 0.4,
+      "Healthcare": 1.0,
+      "Education": 0.5,
+      "IT": 0.5
+    },
+    "Education": {
+      "Agriculture": 0.1,
+      "Manufacturing": 0.2,
+      "Services": 0.7,
+      "Transport": 0.2,
+      "Energy": 0.3,
+      "Healthcare": 0.4,
+      "Education": 1.0,
+      "IT": 0.6
+    },
+    "IT": {
+      "Agriculture": 0.2,
+      "Manufacturing": 0.6,
+      "Services": 0.8,
+      "Transport": 0.4,
+      "Energy": 0.5,
+      "Healthcare": 0.5,
+      "Education": 0.6,
+      "IT": 1.0
+    }
+  }
+}

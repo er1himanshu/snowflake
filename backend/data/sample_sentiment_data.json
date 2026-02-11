@@ -1,0 +1,76 @@
+{
+  "policy_sentiments": {
+    "Fuel Price Change": {
+      "positive_keywords": ["stability", "efficiency", "infrastructure", "development"],
+      "negative_keywords": ["burden", "inflation", "expensive", "unaffordable", "crisis"],
+      "neutral_keywords": ["adjustment", "market", "economy", "policy"],
+      "sample_reactions": [
+        "This fuel price increase is putting a huge burden on common people!",
+        "Higher fuel costs mean everything gets more expensive.",
+        "The government needs to reconsider this decision immediately.",
+        "This will hurt transportation and logistics badly.",
+        "Middle class families are already struggling with inflation."
+      ]
+    },
+    "Tax Reform": {
+      "positive_keywords": ["simplification", "growth", "investment", "progressive", "fair"],
+      "negative_keywords": ["burden", "unfair", "complicated", "loopholes", "inequality"],
+      "neutral_keywords": ["reform", "structure", "revenue", "compliance"],
+      "sample_reactions": [
+        "Tax reforms should focus on closing loopholes for the wealthy.",
+        "This will either boost investment or hurt small businesses.",
+        "We need a more progressive tax system.",
+        "Tax changes always impact the middle class the most.",
+        "Simplification is good but execution matters."
+      ]
+    },
+    "Subsidy Change": {
+      "positive_keywords": ["targeted", "efficient", "sustainable", "support"],
+      "negative_keywords": ["cuts", "hardship", "unfair", "removed", "reduced"],
+      "neutral_keywords": ["rationalization", "restructuring", "allocation"],
+      "sample_reactions": [
+        "Subsidy cuts will hurt farmers and the poor.",
+        "We need subsidies to be better targeted.",
+        "Removing subsidies will increase prices for everyone.",
+        "Government support is essential for vulnerable groups.",
+        "Subsidy reform needs to be done carefully."
+      ]
+    },
+    "Minimum Wage Change": {
+      "positive_keywords": ["fair", "livable", "dignity", "workers", "rights"],
+      "negative_keywords": ["job loss", "inflation", "business", "unaffordable"],
+      "neutral_keywords": ["adjustment", "wage", "labor", "market"],
+      "sample_reactions": [
+        "Workers deserve a living wage!",
+        "This will help reduce poverty and inequality.",
+        "Small businesses may struggle with higher labor costs.",
+        "Wage increases often lead to job cuts.",
+        "This is long overdue for working families."
+      ]
+    },
+    "Environmental Regulation": {
+      "positive_keywords": ["sustainable", "clean", "future", "health", "climate"],
+      "negative_keywords": ["costly", "job loss", "burden", "impractical"],
+      "neutral_keywords": ["regulation", "compliance", "standards", "policy"],
+      "sample_reactions": [
+        "We need strong action on climate change now!",
+        "Environmental protection is essential for our future.",
+        "These regulations may hurt industries and jobs.",
+        "Balance between environment and economy is needed.",
+        "Clean energy is the way forward."
+      ]
+    },
+    "Import/Export Tariff": {
+      "positive_keywords": ["protection", "domestic", "jobs", "self-reliance"],
+      "negative_keywords": ["expensive", "trade war", "retaliation", "inflation"],
+      "neutral_keywords": ["tariff", "trade", "policy", "duty"],
+      "sample_reactions": [
+        "Tariffs protect our domestic industries and jobs.",
+        "This could trigger a trade war with other countries.",
+        "Import costs will increase, leading to inflation.",
+        "We need to balance protection with fair trade.",
+        "Make in India initiative needs tariff support."
+      ]
+    }
+  }
+}
